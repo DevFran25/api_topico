@@ -13,17 +13,18 @@ public class TopicoService {
     @Autowired
     private TopicoRepository repository;
 
-    public Topico crear(TopicoRequest dto) {
+    public TopicoResponse crear(TopicoRequest dto) {
 
         Topico topico = new Topico(
                 null,
                 dto.titulo(),
                 dto.mensaje(),
-                dto.status(),
+                dto.categoria(),
+                "ACTIVO",
                 LocalDateTime.now()
         );
 
-        return repository.save(topico);
+        return new TopicoResponse(repository.save(topico));
     }
 
     public List<TopicoResponse> listar() {
@@ -42,7 +43,7 @@ public class TopicoService {
         Topico topico = obtener(id);
         topico.setTitulo(dto.titulo());
         topico.setMensaje(dto.mensaje());
-        topico.setStatus(dto.status());
+        topico.setCategoria(dto.categoria());
         return repository.save(topico);
     }
 

@@ -10,6 +10,8 @@ public record TopicoUpdateRequest(
         @NotBlank
         String mensaje,
 
-        @NotBlank
-        String status
+        @NotBlank(message = "La categoría es obligatoria")
+        String categoria
+
+
 ) {}

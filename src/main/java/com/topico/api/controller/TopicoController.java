@@ -22,7 +22,7 @@ public class TopicoController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Topico> crear(
+    public ResponseEntity<TopicoResponse> crear(
             @RequestBody @Valid TopicoRequest dto) {
 
         return ResponseEntity

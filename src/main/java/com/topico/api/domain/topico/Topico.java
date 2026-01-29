@@ -23,6 +23,9 @@ public class Topico {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String mensaje;
 
+    @Column(nullable = false, length = 100)
+    private String categoria;
+
     @Column(nullable = false, length = 20)
     private String status;
 
