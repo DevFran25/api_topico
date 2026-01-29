@@ -1,20 +1,16 @@
 package com.topico.api.domain.topico;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "topicos")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-
 public class Topico {
 
     @Id
@@ -27,10 +23,9 @@ public class Topico {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String mensaje;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 20)
     private String status;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
-
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
 }

@@ -9,24 +9,43 @@ import java.util.List;
 @Service
 public class TopicoService {
 
-    private final TopicoRepository repository;
+    @Autowired
+    private TopicoRepository repository;
 
-    public TopicoService(TopicoRepository repository) {
-        this.repository = repository;
-    }
+    public Topico crear(TopicoRequest dto) {
 
-    public Topico crear(TopicoRequest data) {
         Topico topico = new Topico(
                 null,
-                data.titulo(),
-                data.mensaje(),
-                data.status(),
+                dto.titulo(),
+                dto.mensaje(),
+                dto.status(),
                 LocalDateTime.now()
         );
+
         return repository.save(topico);
     }
 
-    public List<Topico> listar() {
-        return repository.findAll();
+    public List<TopicoResponse> listar() {
+        return repository.findAll()
+                .stream()
+                .map(TopicoResponse::new)
+                .toList();
+    }
+
+    public Topico obtener(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tópico no encontrado"));
+    }
+
+    public Topico actualizar(Long id, TopicoUpdateRequest dto) {
+        Topico topico = obtener(id);
+        topico.setTitulo(dto.titulo());
+        topico.setMensaje(dto.mensaje());
+        topico.setStatus(dto.status());
+        return repository.save(topico);
+    }
+
+    public void eliminar(Long id) {
+        repository.deleteById(id);
     }
 }

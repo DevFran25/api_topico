@@ -1,6 +1,7 @@
 package com.topico.api.controller;
 
 import com.topico.api.domain.topico.Topico;
+import com.topico.api.domain.topico.TopicoResponse;
 import com.topico.api.domain.topico.TopicoService;
 import com.topico.api.dto.TopicoRequest;
 import jakarta.validation.Valid;
@@ -25,7 +26,7 @@ public class TopicoController {
     }
 
     @GetMapping
-    public List<Topico> listar() {
+    public List<TopicoResponse> listar() {
         return service.listar();
     }
 }
