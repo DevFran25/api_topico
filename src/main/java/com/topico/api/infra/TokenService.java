@@ -12,16 +12,22 @@ import java.time.*;
 @Service
 public class TokenService {
 
-    @Value("${api.security.secret}")
+    @Value("${api.security.token.secret}")
     private String secret;
+
+    // 6 horas
+    private static final long EXPIRATION_TIME = 1000L * 60 * 60 * 6;
 
     public String generarToken(Usuario usuario) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
+        Instant exp = Instant.ofEpochMilli(System.currentTimeMillis() + EXPIRATION_TIME);
+
         return JWT.create()
-                .withIssuer("API Topicos")
+                .withIssuer("api_topicos")
                 .withSubject(usuario.getUsername())
-                .withExpiresAt(expiracion())
+                .withIssuedAt(Instant.now())
+                .withExpiresAt(exp)
                 .sign(algorithm);
     }
 
@@ -29,15 +35,9 @@ public class TokenService {
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
         return JWT.require(algorithm)
-                .withIssuer("API Topicos")
+                .withIssuer("api_topicos")
                 .build()
                 .verify(token)
                 .getSubject();
-    }
-
-    private Instant expiracion() {
-        return LocalDateTime.now()
-                .plusHours(2)
-                .toInstant(ZoneOffset.UTC);
     }
 }

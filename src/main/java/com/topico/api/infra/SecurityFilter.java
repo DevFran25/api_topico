@@ -1,5 +1,7 @@
 package com.topico.api.infra;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.topico.api.domain.usuario.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
@@ -23,33 +26,44 @@ public class SecurityFilter extends OncePerRequestFilter {
     private UsuarioRepository usuarioRepository;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        String token = recuperarToken(request);
+        String token = request.getHeader("Authorization");
 
-        if (token != null) {
-            String username = tokenService.getSubject(token);
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.replace("Bearer ", "");
 
-            var usuario = usuarioRepository.findByUsername(username);
+            try {
+                String username = tokenService.getSubject(token);
 
-            if (usuario.isPresent()) {
-                var authentication = new UsernamePasswordAuthenticationToken(
-                        usuario.get(),
-                        null,
-                        usuario.get().getAuthorities()
-                );
+                var usuario = usuarioRepository.findByUsername(username);
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authentication);
+                if (usuario.isPresent()) {
+                    var auth = new UsernamePasswordAuthenticationToken(
+                            usuario.get(),
+                            null,
+                            usuario.get().getAuthorities()
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+
+            } catch (TokenExpiredException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token expirado");
+                return;
+            } catch (JWTVerificationException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token inválido");
+                return;
             }
         }
 
         filterChain.doFilter(request, response);
     }
+
 
     private String recuperarToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");

@@ -13,11 +13,16 @@ public class AutenticacionService implements UserDetailsService {
     private UsuarioRepository repository;
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
+        var user = repository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        return repository.findByUsername(username)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("Usuario no encontrado"));
+        System.out.println("==== DEBUG PASSWORD ====");
+        System.out.println("Valor: [" + user.getPassword() + "]");
+        System.out.println("Longitud: " + user.getPassword().length());
+        System.out.println("Empieza con $2a$: " + user.getPassword().startsWith("$2a$"));
+        System.out.println("========================");
+
+        return user;
     }
 }

@@ -2,6 +2,7 @@ package com.topico.api.controller;
 
 
 import com.topico.api.domain.usuario.Usuario;
+import com.topico.api.dto.TokenResponse;
 import com.topico.api.infra.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,18 @@ public class AutenticacionController {
     private TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest dto) {
+    public ResponseEntity<TokenResponse> login(
+            @RequestBody @Valid LoginRequest dto) {
 
         Authentication auth = manager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         dto.username(), dto.password())
         );
 
-        String token = tokenService.generarToken((Usuario) auth.getPrincipal());
+        String token = tokenService.generarToken(
+                (Usuario) auth.getPrincipal()
+        );
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(new TokenResponse(token));
     }
 }
