@@ -40,11 +40,6 @@ Sistema de autenticación basado en JWT con doble token:
 * Duración corta (15 min)
 * Usado para acceder a endpoints protegidos
 
-### 🔁 Refresh Token
-
-* Duración larga (7 días)
-* Permite generar nuevos access tokens sin relogin
-
 ### Flujo:
 
 ```
