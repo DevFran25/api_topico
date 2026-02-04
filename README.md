@@ -96,7 +96,7 @@ spring.datasource.url=jdbc:mysql://localhost:3306/api_topico
 spring.datasource.username=root
 spring.datasource.password=1234
 
-api.security.token.secret=clave_secreta_super_segura
+api.security.token.secret=12345
 ```
 
 ---
@@ -126,7 +126,6 @@ Se recomienda usar:
 ✔ Seguridad con filtros
 ✔ Arquitectura limpia
 ✔ CRUD base
-✔ Persistencia JPA
 ✔ MySQL
 
 ---
